@@ -1,7 +1,7 @@
 ﻿using RLNET;
-using TestRL.CelestialObjects;
+using RSS.CelestialObjects;
 
-namespace TestRL.Actions
+namespace RSS.Actions
 {
     class Cancel : IRlKeyOption
     {

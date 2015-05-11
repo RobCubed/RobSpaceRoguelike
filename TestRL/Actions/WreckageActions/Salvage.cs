@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RLNET;
-using TestRL.CelestialObjects;
+﻿using RLNET;
+using RSS.CelestialObjects;
 
-namespace TestRL.Actions.WreckageActions
+namespace RSS.Actions.WreckageActions
 {
     public class Salvage : IRlKeyOption {
 

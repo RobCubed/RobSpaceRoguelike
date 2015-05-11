@@ -1,6 +1,6 @@
 ﻿using RLNET;
 
-namespace TestRL.CelestialObjects
+namespace RSS.CelestialObjects
 {
     public interface ICelestialObject
     {

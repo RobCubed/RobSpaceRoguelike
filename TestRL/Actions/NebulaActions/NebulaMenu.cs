@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TestRL.Actions.NebulaActions
+namespace RSS.Actions.NebulaActions
 {
     class NebulaMenu : IRlMenu
     {

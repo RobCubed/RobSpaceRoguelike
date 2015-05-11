@@ -7,8 +7,8 @@
     <ProjectGuid>{0D50E732-26AC-4980-B2E8-3F8DF6F2582E}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TestRL</RootNamespace>
-    <AssemblyName>TestRL</AssemblyName>
+    <RootNamespace>RSS</RootNamespace>
+    <AssemblyName>RobSpaceRoguelike</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -51,6 +51,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actions\RandomActions\FuelUpgrade.cs" />
+    <Compile Include="Actions\RandomActions\Pirates.cs" />
+    <Compile Include="Actions\RandomActions\RandomAction.cs" />
+    <Compile Include="Actions\RandomActions\RareObject.cs" />
     <Compile Include="Actions\StationActions\BuyProbe.cs" />
     <Compile Include="Actions\StationActions\SellSalvage.cs" />
     <Compile Include="Actions\StationActions\StationMenu.cs" />

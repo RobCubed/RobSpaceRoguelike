@@ -1,7 +1,7 @@
 ﻿using System;
 using RLNET;
 
-namespace TestRL.CelestialObjects
+namespace RSS.CelestialObjects
 {
     class Nebula : ICelestialObject
     {

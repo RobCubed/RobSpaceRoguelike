@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TestRL.Actions.NebulaActions;
+﻿using System.Collections.Generic;
+using RSS.Actions.NebulaActions;
 
-namespace TestRL.Actions.WreckageActions
+namespace RSS.Actions.WreckageActions
 {
     public class WreckageMenu : IRlMenu
     {

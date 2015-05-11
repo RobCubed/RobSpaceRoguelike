@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 using RLNET;
 using RogueSharp;
-using TestRL.Actions;
-using TestRL.Actions.NebulaActions;
-using TestRL.Actions.StationActions;
-using TestRL.Actions.WreckageActions;
-using TestRL.CelestialObjects;
+using RSS.Actions;
+using RSS.Actions.NebulaActions;
+using RSS.Actions.RandomActions;
+using RSS.Actions.StationActions;
+using RSS.Actions.WreckageActions;
+using RSS.CelestialObjects;
 
-namespace TestRL
+namespace RSS
 {
     class Program
     {
@@ -157,6 +153,7 @@ namespace TestRL
                 if (keyPress.Key == RLKey.Up)
                 {
                     if (FuelCheck()) return;
+                    RandomAction.Go();
                     if (_map.GetCell(Player.X, Player.Y - 1).IsWalkable)
                     {
                         // Update the player position
@@ -178,6 +175,7 @@ namespace TestRL
                 else if (keyPress.Key == RLKey.Down)
                 {
                     if (FuelCheck()) return;
+                    RandomAction.Go();
                     if (_map.GetCell(Player.X, Player.Y + 1).IsWalkable)
                     {
                         Player.Y++;
@@ -197,6 +195,7 @@ namespace TestRL
                 else if (keyPress.Key == RLKey.Left)
                 {
                     if (FuelCheck()) return;
+                    RandomAction.Go();
                     if (_map.GetCell(Player.X - 1, Player.Y).IsWalkable)
                     {
                         Player.X--;
@@ -216,6 +215,7 @@ namespace TestRL
                 else if (keyPress.Key == RLKey.Right)
                 {
                     if (FuelCheck()) return;
+                    RandomAction.Go();
                     if (_map.GetCell(Player.X + 1, Player.Y).IsWalkable)
                     {
                         Player.X++;
@@ -315,7 +315,7 @@ namespace TestRL
             _rootConsole.Print(78, 7, "Fuel Probes : " + Player.FuelProbes, RLColor.White);
             _rootConsole.Print(78, 8, "Cargo : " + Player.CargoHold + " / " + Player.CargoHoldMax, RLColor.White);
             _rootConsole.Print(78, 9, "Credits : " + Player.Credits, RLColor.White);
-            _rootConsole.Print(78, 10, "Score : " + Player.Score, RLColor.White);
+            _rootConsole.Print(78, 12, "Score : " + Player.Score, RLColor.Green);
 
             _rootConsole.Print(77, 40, _statusText, RLColor.Red);
 

@@ -1,7 +1,7 @@
 ﻿using RLNET;
-using TestRL.CelestialObjects;
+using RSS.CelestialObjects;
 
-namespace TestRL.Actions.NebulaActions
+namespace RSS.Actions.NebulaActions
 {
     class Scan : IRlKeyOption
     {

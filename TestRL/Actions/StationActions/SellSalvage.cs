@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RLNET;
-using TestRL.CelestialObjects;
+using RSS.CelestialObjects;
 
-namespace TestRL.Actions.StationActions
+namespace RSS.Actions.StationActions
 {
     public class SellSalvage : IRlKeyOption
     {
