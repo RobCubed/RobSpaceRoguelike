@@ -12,5 +12,19 @@
         public int CargoHoldMax { get; set; }
         public int Score { get; set; }
         public int Credits { get; set; }
+
+        public Player()
+        {
+            X = 25;
+            Y = 25;
+            SensorRange = 30;
+            Fuel = 1000;
+            MaxFuel = 1000;
+            FuelProbes = 5;
+            Score = 0;
+            Credits = 0;
+            CargoHold = 0;
+            CargoHoldMax = 100;
+        }
     }
 }

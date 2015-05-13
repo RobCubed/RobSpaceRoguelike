@@ -39,7 +39,16 @@ namespace RSS.Stack
             while (_usedSectorNames.Count == currentCount)
             {
                 int randomName = r.Next(_sectorNames.Count);
-                name = (string)_sectorNames[randomName].First().ToString().ToUpper() + String.Join("", ((string)_sectorNames[randomName]).Skip(1))  + " " + ToRoman(r.Next(1, 100));
+                try
+                {
+                    name = (string) _sectorNames[randomName].First().ToString().ToUpper() +
+                           String.Join("", ((string) _sectorNames[randomName]).Skip(1)) + " " + ToRoman(r.Next(1, 100));
+                }
+                catch (InvalidOperationException ioe)
+                {
+                    Console.WriteLine(ioe.Message);
+                    Console.WriteLine("....");
+                }
                 _usedSectorNames.Add(name);
             }
 

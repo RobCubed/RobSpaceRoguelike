@@ -32,16 +32,6 @@ namespace RSS
         {
             _statusText = "";
             Player = new Player();
-            Player.X = 25;
-            Player.Y = 25;
-            Player.SensorRange = 100;
-            Player.Fuel = 100;
-            Player.MaxFuel = 100;
-            Player.FuelProbes = 5;
-            Player.Score = 0;
-            Player.Credits = 0;
-            Player.CargoHold = 0;
-            Player.CargoHoldMax = 100;
 
             _sectorMap = new Dictionary<int, Sector>();
             _sectorMap.Add(0, new Sector(CurrentSector));
@@ -55,6 +45,10 @@ namespace RSS
             _rootConsole = new RLRootConsole(fontFileName, ScreenWidth, ScreenHeight, 8, 8, 1f, consoleTitle);
             _rootConsole.Update += OnRootConsoleUpdate;
             _rootConsole.Render += OnRootConsoleRender;
+            
+            // TESTING - Only uncomment this if you want to pre-generate (and travel through) a number of systems.
+            //TestRun(50000);
+
             _rootConsole.Run();
         }
 
@@ -276,6 +270,34 @@ namespace RSS
             int fromSector = _sectorMap.Where(x => x.Value == _currentSectorMap).Select(x => x.Key).FirstOrDefault();
             _sectorMap.TryGetValue(p, out _currentSectorMap);
             _currentSectorMap.JoinSector(fromSector);
+        }
+
+        private static void TestRun(int numSystems)
+        {
+            HashSet<int> ints = new HashSet<int>();
+            for (int i = 0; i < 50000; i++)
+            {
+                foreach (ICelestialObject ce in _currentSectorMap.CelestialObjects)
+                {
+                    if (ce.GetType() == typeof (Wormhole))
+                    {
+                        Wormhole wh = (Wormhole) ce;
+                        Sector sectorCheck;
+                        _sectorMap.TryGetValue(wh.JumpTo, out sectorCheck);
+                        if (sectorCheck == _currentSectorMap || ints.Contains(wh.JumpTo))
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            JumpToSector(wh.JumpTo);
+                            ints.Add(wh.JumpTo);
+                            Console.WriteLine(_currentSectorMap.Name);
+                            break;
+                        }
+                    }
+                }
+            }
         }
     }
 }

@@ -1198,7 +1198,6 @@ congressus
 congrue
 congruens
 congruenter
-
 congruus
 congruo
 congruus
