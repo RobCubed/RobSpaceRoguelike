@@ -78,8 +78,9 @@
     <Compile Include="RLKeyOption.cs" />
     <Compile Include="RLMenu.cs" />
     <Compile Include="Sector.cs" />
-    <Compile Include="Stack\LoadSectorNames.cs" />
-    <Compile Include="Stack\NameGenHelper.cs" />
+    <Compile Include="Tools\LoadSectorNames.cs" />
+    <Compile Include="Tools\LocationHelper.cs" />
+    <Compile Include="Tools\NameGenHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

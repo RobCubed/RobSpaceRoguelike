@@ -40,11 +40,46 @@ namespace RSS
             _generated = true;
         }
 
+        internal void JoinSector(int fromSector)
+        {
+            if (!_generated) GenerateObjects();
+            _generated = true;
+
+            foreach (ICelestialObject ce in CelestialObjects)
+            {
+                if (ce.GetType() == typeof(Wormhole))
+                {
+                    Wormhole wh = (Wormhole) ce;
+                    if (Program._sectorMap.ContainsKey(wh.JumpTo))
+                    {
+                        Sector sector;
+                        Program._sectorMap.TryGetValue(wh.JumpTo, out sector);
+                        if (sector != null)
+                        {
+                            foreach (ICelestialObject nce in sector.CelestialObjects)
+                            {
+                                if (ce.GetType() == typeof (Wormhole))
+                                {
+                                    Wormhole nwh = (Wormhole) ce;
+                                    nwh.Name = "Wormhole to " + sector.Name;
+                                }
+                            }
+                        }
+                    }
+                    if (wh.JumpTo == fromSector)
+                    {
+                        Program.Player.X = wh.X;
+                        Program.Player.Y = wh.Y;
+                    }
+                }
+            }
+        }
+
         private static Point GenerateRandomPoint(List<Point> takenPoints)
         {
             Random r = new Random();
-            int X = r.Next(1, 75);
-            int Y = r.Next(1, 75);
+            int X = r.Next(2, 74);
+            int Y = r.Next(2, 74);
             bool check = true;
             Point finalPoint = new Point();
             while (check)
@@ -54,8 +89,8 @@ namespace RSS
                 {
                     if (point.X == X && point.Y == Y)
                     {
-                        X = r.Next(1, 75);
-                        Y = r.Next(1, 75);
+                        X = r.Next(2, 74);
+                        Y = r.Next(2, 74);
                         match = true;
                     }
                 }
@@ -63,7 +98,12 @@ namespace RSS
                 {
                     check = false;
                     finalPoint = new Point(X, Y);
+                    Point finalPointX = new Point(X + 1, Y);
+                    Point finalPointY = new Point(X, Y);
+                    Point finalPointXY = new Point(X+1, Y+1);
                     takenPoints.Add(finalPoint);
+                    takenPoints.Add(finalPointX);
+                    takenPoints.Add(finalPointXY);
                 }
             }
             return finalPoint;

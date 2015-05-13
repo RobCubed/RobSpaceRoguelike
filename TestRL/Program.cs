@@ -273,8 +273,9 @@ namespace RSS
         {
             if (!_sectorMap.ContainsKey(p))
                 _sectorMap.Add(p, new Sector(_sectorMap.Where(x => x.Value == _currentSectorMap).Select(x => x.Key).FirstOrDefault()));
+            int fromSector = _sectorMap.Where(x => x.Value == _currentSectorMap).Select(x => x.Key).FirstOrDefault();
             _sectorMap.TryGetValue(p, out _currentSectorMap);
-            _currentSectorMap.JoinSector();
+            _currentSectorMap.JoinSector(fromSector);
         }
     }
 }

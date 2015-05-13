@@ -10,14 +10,14 @@ namespace RSS.CelestialObjects
 {
     class Wormhole : ICelestialObject
     {
-        private readonly int _jumpTo;
+        public readonly int JumpTo;
 
         public Wormhole(int jumpTo)
         {
-            _jumpTo = jumpTo;
+            JumpTo = jumpTo;
 
             Sector jumpToSector = null;
-            Program._sectorMap.TryGetValue(_jumpTo, out jumpToSector);
+            Program._sectorMap.TryGetValue(JumpTo, out jumpToSector);
             if (jumpToSector != null)
             {
                 Name = "Wormhole to " + jumpToSector.Name;
@@ -48,7 +48,7 @@ namespace RSS.CelestialObjects
         public void Scan()
         {
             Sector jumpToSector = null;
-            Program._sectorMap.TryGetValue(_jumpTo, out jumpToSector);
+            Program._sectorMap.TryGetValue(JumpTo, out jumpToSector);
             if (jumpToSector != null)
             {
                 Debug.WriteLine("This jumps to " + jumpToSector.Name);
@@ -76,7 +76,7 @@ namespace RSS.CelestialObjects
 
         public void Jump()
         {
-            Program.JumpToSector(_jumpTo);
+            Program.JumpToSector(JumpTo);
         }
     }
 }
