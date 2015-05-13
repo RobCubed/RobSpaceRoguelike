@@ -53,5 +53,10 @@ namespace RSS.CelestialObjects
         {
             throw new NotImplementedException();
         }
+
+        public void Jump()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

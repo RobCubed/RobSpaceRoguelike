@@ -72,6 +72,11 @@ namespace RSS.CelestialObjects
             throw new NotImplementedException();
         }
 
+        public void Jump()
+        {
+            throw new NotImplementedException();
+        }
+
         public int TakeFuel()
         {
             return new Random().Next(0, TotalFuel + 1);

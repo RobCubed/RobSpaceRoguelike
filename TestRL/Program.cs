@@ -14,18 +14,19 @@ namespace RSS
 {
     class Program
     {
-        private static readonly int _screenWidth = 105;
-        private static readonly int _screenHeight = 75;
+        public static readonly int ScreenWidth = 105;
+        public static readonly int ScreenHeight = 75;
         public static Player Player;
         private static RLRootConsole _rootConsole;
-        private static IMap _map;
         private static string _statusText;
-        private static List<ICelestialObject> _celestialObjects;
         private static ICelestialObject _currentCelestialObject;
+        private static Sector _currentSectorMap;
         private static IRlMenu _menu;
         private static bool _menuActive;
         private static Cancel _cancel;
         private static List<IRlKeyOption> _currentOptions;
+        public static Dictionary<int, Sector> _sectorMap;
+        public static int CurrentSector = 0;
         
         static void Main(string[] args)
         {
@@ -33,7 +34,7 @@ namespace RSS
             Player = new Player();
             Player.X = 25;
             Player.Y = 25;
-            Player.SensorRange = 25;
+            Player.SensorRange = 100;
             Player.Fuel = 100;
             Player.MaxFuel = 100;
             Player.FuelProbes = 5;
@@ -41,96 +42,20 @@ namespace RSS
             Player.Credits = 0;
             Player.CargoHold = 0;
             Player.CargoHoldMax = 100;
-            
+
+            _sectorMap = new Dictionary<int, Sector>();
+            _sectorMap.Add(0, new Sector(CurrentSector));
+            _sectorMap.TryGetValue(0, out _currentSectorMap);
+            _currentSectorMap.JoinSector();
+
             _cancel = new Cancel();
             _menuActive = false;
-            _map = Map.Create(new BorderOnlyMapCreationStrategy<Map>(_screenWidth - 30, _screenHeight));
-            GenerateObjects();
             string fontFileName = "terminal8x8.png";
             string consoleTitle = "RobSpaceRoguelike";
-            _rootConsole = new RLRootConsole(fontFileName, _screenWidth, _screenHeight, 8, 8, 1f, consoleTitle);
+            _rootConsole = new RLRootConsole(fontFileName, ScreenWidth, ScreenHeight, 8, 8, 1f, consoleTitle);
             _rootConsole.Update += OnRootConsoleUpdate;
             _rootConsole.Render += OnRootConsoleRender;
             _rootConsole.Run();
-        }
-
-        private static Point GenerateRandomPoint(List<Point> takenPoints)
-        {
-            Random r = new Random();
-            int X = r.Next(1, 75);
-            int Y = r.Next(1, 75);
-            bool check = true;
-            Point finalPoint = new Point();
-            while (check)
-            {
-                bool match = false;
-                foreach (Point point in takenPoints)
-                {
-                    if (point.X == X && point.Y == Y)
-                    {
-                        X = r.Next(1, 75);
-                        Y = r.Next(1, 75);
-                        match = true;
-                    }
-                }
-                if (!match)
-                {
-                    check = false;
-                    finalPoint = new Point(X, Y);
-                    takenPoints.Add(finalPoint);
-                }
-            }
-            return finalPoint;
-        }
-        private static void GenerateObjects()
-        {
-            _celestialObjects = new List<ICelestialObject>();
-            var takenPoints = new List<Point>();
-            takenPoints.Add(new Point(Player.X, Player.Y));
-            Random r = new Random();
-            int runTimes = r.Next(2, 15);
-            for (int i = 0; i < runTimes; i++)
-            {
-                Point point = GenerateRandomPoint(takenPoints);
-                _celestialObjects.Add(new Nebula()
-                {
-                    Color = RLColor.LightRed,
-                    Name = "Nebula " + i,
-                    Symbol = '#',
-                    TotalFuel = r.Next(0, 100),
-                    X = point.X,
-                    Y = point.Y,
-                    Menu = new NebulaMenu()
-                });
-                point = GenerateRandomPoint(takenPoints);
-                _celestialObjects.Add(new Wreckage()
-                {
-                    Color = RLColor.Yellow,
-                    Name = "Wreckage " + i,
-                    Symbol = 'W',
-                    SalvageAvailable = r.Next(0, 50),
-                    X = point.X,
-                    Y = point.Y,
-                    Menu = new WreckageMenu()
-                });
-           }
-
-            runTimes = r.Next(2, 4);
-            for (int i = 0; i < runTimes; i++)
-            {
-                Point point = GenerateRandomPoint(takenPoints);
-                _celestialObjects.Add(new Station()
-                {
-                    Color = RLColor.LightBlue,
-                    Name = "Nebula " + i,
-                    Symbol = 'S',
-                    X = point.X,
-                    Y = point.Y,
-                    Menu = new StationMenu()
-                });
-            }
-
-            
         }
 
         private static void OnRootConsoleUpdate(object sender, UpdateEventArgs e)
@@ -154,7 +79,7 @@ namespace RSS
                 {
                     if (FuelCheck()) return;
                     RandomAction.Go();
-                    if (_map.GetCell(Player.X, Player.Y - 1).IsWalkable)
+                    if (_currentSectorMap.SectorMap.GetCell(Player.X, Player.Y - 1).IsWalkable)
                     {
                         // Update the player position
                         Player.Y--;
@@ -176,7 +101,7 @@ namespace RSS
                 {
                     if (FuelCheck()) return;
                     RandomAction.Go();
-                    if (_map.GetCell(Player.X, Player.Y + 1).IsWalkable)
+                    if (_currentSectorMap.SectorMap.GetCell(Player.X, Player.Y + 1).IsWalkable)
                     {
                         Player.Y++;
                         Player.Fuel--;
@@ -196,7 +121,7 @@ namespace RSS
                 {
                     if (FuelCheck()) return;
                     RandomAction.Go();
-                    if (_map.GetCell(Player.X - 1, Player.Y).IsWalkable)
+                    if (_currentSectorMap.SectorMap.GetCell(Player.X - 1, Player.Y).IsWalkable)
                     {
                         Player.X--;
                         Player.Fuel--;
@@ -216,7 +141,7 @@ namespace RSS
                 {
                     if (FuelCheck()) return;
                     RandomAction.Go();
-                    if (_map.GetCell(Player.X + 1, Player.Y).IsWalkable)
+                    if (_currentSectorMap.SectorMap.GetCell(Player.X + 1, Player.Y).IsWalkable)
                     {
                         Player.X++;
                         Player.Fuel--;
@@ -237,7 +162,7 @@ namespace RSS
 
         private static ICelestialObject CheckObject(int x, int y)
         {
-            return _celestialObjects.FirstOrDefault(c => c.Y == y && c.X == x);
+            return _currentSectorMap.CelestialObjects.FirstOrDefault(c => c.Y == y && c.X == x);
         }
 
         private static bool FuelCheck()
@@ -254,20 +179,20 @@ namespace RSS
         private static void OnRootConsoleRender(object sender, UpdateEventArgs e)
         {
             _rootConsole.Clear();
-            
-            foreach (ICelestialObject ce in _celestialObjects)
+
+            foreach (ICelestialObject ce in _currentSectorMap.CelestialObjects)
             {
-                Cell cell = _map.GetCell(ce.X, ce.Y);
-                _map.SetCellProperties(ce.X, ce.Y, false, false, cell.IsExplored);
+                Cell cell = _currentSectorMap.SectorMap.GetCell(ce.X, ce.Y);
+                _currentSectorMap.SectorMap.SetCellProperties(ce.X, ce.Y, false, false, cell.IsExplored);
             }
 
-            _map.ComputeFov(Player.X, Player.Y, Player.SensorRange, true);
-            
-            foreach (var cell in _map.GetAllCells())
+            _currentSectorMap.SectorMap.ComputeFov(Player.X, Player.Y, Player.SensorRange, true);
+
+            foreach (var cell in _currentSectorMap.SectorMap.GetAllCells())
             {
                 if (cell.IsInFov)
                 {
-                    _map.SetCellProperties(cell.X, cell.Y, cell.IsTransparent, cell.IsWalkable, true);
+                    _currentSectorMap.SectorMap.SetCellProperties(cell.X, cell.Y, cell.IsTransparent, cell.IsWalkable, true);
                     if (cell.IsWalkable)
                     {
                         _rootConsole.Set(cell.X, cell.Y, RLColor.Gray, null, '.');
@@ -275,7 +200,7 @@ namespace RSS
                     else
                     {
                         _rootConsole.Set(cell.X, cell.Y, RLColor.LightGray, null, ' ');
-                        foreach (ICelestialObject ce in _celestialObjects)
+                        foreach (ICelestialObject ce in _currentSectorMap.CelestialObjects)
                         {
                             if (ce.X == cell.X && ce.Y == cell.Y)
                             {
@@ -293,7 +218,7 @@ namespace RSS
                     else
                     {
                         _rootConsole.Set(cell.X, cell.Y, RLColor.Gray, null, ' ');
-                        foreach (ICelestialObject ce in _celestialObjects)
+                        foreach (ICelestialObject ce in _currentSectorMap.CelestialObjects)
                         {
                             if (ce.X == cell.X && ce.Y == cell.Y)
                             {
@@ -309,7 +234,7 @@ namespace RSS
 
             _rootConsole.Print(77, 1, "SpaceRL", RLColor.White);
             _rootConsole.Print(77, 3, "ShipName:", RLColor.White);
-            _rootConsole.Print(78, 4, "Location : " + Player.X + "x" + Player.Y, RLColor.White);
+            _rootConsole.Print(78, 4, "Location : " + _currentSectorMap.Name, RLColor.White);
             _rootConsole.Print(78, 5, "Sensor Strength : " + Player.SensorRange, RLColor.White);
             _rootConsole.Print(78, 6, "Fuel : " + Player.Fuel + " / " + Player.MaxFuel, RLColor.White);
             _rootConsole.Print(78, 7, "Fuel Probes : " + Player.FuelProbes, RLColor.White);
@@ -342,6 +267,14 @@ namespace RSS
 
             // Tell RLNET to draw the console that we set
             _rootConsole.Draw();
+        }
+
+        internal static void JumpToSector(int p)
+        {
+            if (!_sectorMap.ContainsKey(p))
+                _sectorMap.Add(p, new Sector(_sectorMap.Where(x => x.Value == _currentSectorMap).Select(x => x.Key).FirstOrDefault()));
+            _sectorMap.TryGetValue(p, out _currentSectorMap);
+            _currentSectorMap.JoinSector();
         }
     }
 }

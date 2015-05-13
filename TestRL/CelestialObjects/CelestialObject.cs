@@ -15,5 +15,6 @@ namespace RSS.CelestialObjects
         void Salvage();
         void BuyProbe();
         void SellSalvage();
+        void Jump();
     }
 }

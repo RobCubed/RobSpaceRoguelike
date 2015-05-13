@@ -58,6 +58,9 @@
     <Compile Include="Actions\StationActions\BuyProbe.cs" />
     <Compile Include="Actions\StationActions\SellSalvage.cs" />
     <Compile Include="Actions\StationActions\StationMenu.cs" />
+    <Compile Include="Actions\WormholeActions\Jump.cs" />
+    <Compile Include="Actions\WormholeActions\Scan.cs" />
+    <Compile Include="Actions\WormholeActions\WormholeMenu.cs" />
     <Compile Include="Actions\WreckageActions\Salvage.cs" />
     <Compile Include="Actions\WreckageActions\WreckageMenu.cs" />
     <Compile Include="CelestialObjects\CelestialObject.cs" />
@@ -67,18 +70,25 @@
     <Compile Include="Actions\NebulaActions\Refuel.cs" />
     <Compile Include="Actions\NebulaActions\Scan.cs" />
     <Compile Include="CelestialObjects\Station.cs" />
+    <Compile Include="CelestialObjects\Wormhole.cs" />
     <Compile Include="CelestialObjects\Wreckage.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RLKeyOption.cs" />
     <Compile Include="RLMenu.cs" />
+    <Compile Include="Sector.cs" />
+    <Compile Include="Stack\LoadSectorNames.cs" />
+    <Compile Include="Stack\NameGenHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\sectornames.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="terminal8x8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
