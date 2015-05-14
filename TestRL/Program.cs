@@ -332,6 +332,7 @@ namespace RSS
             int fromSector = _sectorMap.Where(x => x.Value == _currentSectorMap).Select(x => x.Key).FirstOrDefault();
             _sectorMap.TryGetValue(p, out _currentSectorMap);
             _currentSectorMap.JoinSector(fromSector);
+            InfoLog.AddEntry("Now in " + _currentSectorMap.Name, true);
         }
 
         private static void TestRun(int numSystems)
