@@ -17,28 +17,28 @@ namespace RSS.CelestialObjects
 
         public void Scan()
         {
-            Console.WriteLine("Total salvage available at " + Name + " : " + SalvageAvailable);
+            Program.InfoLog.AddEntry("Total salvage available at " + Name + " : " + SalvageAvailable, true);
         }
 
         public void Salvage()
         {
             if (Program.Player.CargoHold >= Program.Player.CargoHoldMax)
             {
-                Console.WriteLine("Your hold is full! Go sell your cargo.");
+                Program.InfoLog.AddEntry("Your hold is full! Go sell your cargo.", true);
             }
 
             int maxToCarry = Program.Player.CargoHoldMax - Program.Player.CargoHold;
 
             if (maxToCarry > SalvageAvailable)
             {
-                Console.WriteLine("You've cleared out all " + SalvageAvailable + " units of salvage and have " +
-                                  (maxToCarry - SalvageAvailable) + " space left.");
+                Program.InfoLog.AddEntry("You've cleared out all " + SalvageAvailable + " units of salvage and have " +
+                                  (maxToCarry - SalvageAvailable) + " space left.", true);
                 Program.Player.CargoHold += SalvageAvailable;
                 SalvageAvailable = 0;
             }
             else
             {
-                Console.WriteLine("You can only carry " + maxToCarry + ", leaving " + (SalvageAvailable - maxToCarry) + " in the wreckage for later.");
+                Program.InfoLog.AddEntry("You can only carry " + maxToCarry + ", leaving " + (SalvageAvailable - maxToCarry) + " in the wreckage for later.", true);
                 Program.Player.CargoHold += maxToCarry;
                 SalvageAvailable -= maxToCarry;
             }

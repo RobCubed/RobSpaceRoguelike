@@ -18,8 +18,8 @@
             X = 25;
             Y = 25;
             SensorRange = 30;
-            Fuel = 1000;
-            MaxFuel = 1000;
+            Fuel = 150;
+            MaxFuel = 150;
             FuelProbes = 5;
             Score = 0;
             Credits = 0;

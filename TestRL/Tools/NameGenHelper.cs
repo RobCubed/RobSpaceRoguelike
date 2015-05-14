@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RSS.Tools;
 
 namespace RSS.Stack
 {
@@ -34,15 +35,14 @@ namespace RSS.Stack
         public static string GenerateSystemName()
         {
             int currentCount = _usedSectorNames.Count;
-            var r = new Random();
             string name = "ERROR";
             while (_usedSectorNames.Count == currentCount)
             {
-                int randomName = r.Next(_sectorNames.Count);
+                int randomName = Ran.dom.Next(_sectorNames.Count);
                 try
                 {
                     name = (string) _sectorNames[randomName].First().ToString().ToUpper() +
-                           String.Join("", ((string) _sectorNames[randomName]).Skip(1)) + " " + ToRoman(r.Next(1, 100));
+                           String.Join("", ((string)_sectorNames[randomName]).Skip(1)) + " " + ToRoman(Ran.dom.Next(1, 100));
                 }
                 catch (InvalidOperationException ioe)
                 {

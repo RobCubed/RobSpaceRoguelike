@@ -11,6 +11,7 @@ using RSS.Actions.WormholeActions;
 using RSS.Actions.WreckageActions;
 using RSS.CelestialObjects;
 using RSS.Stack;
+using RSS.Tools;
 
 namespace RSS
 {
@@ -30,7 +31,7 @@ namespace RSS
             {
                 fromLink
             };
-            SectorMap = Map.Create(new BorderOnlyMapCreationStrategy<Map>(Program.ScreenWidth - 30, Program.ScreenHeight));
+            SectorMap = Map.Create(new BorderOnlyMapCreationStrategy<Map>(Program.ScreenWidth - 30, Program.ScreenHeight - 30));
             CelestialObjects = new List<ICelestialObject>();
         }
 
@@ -77,9 +78,8 @@ namespace RSS
 
         private static Point GenerateRandomPoint(List<Point> takenPoints)
         {
-            Random r = new Random();
-            int X = r.Next(2, 74);
-            int Y = r.Next(2, 74);
+            int X = Ran.dom.Next(2, 74);
+            int Y = Ran.dom.Next(2, 74);
             bool check = true;
             Point finalPoint = new Point();
             while (check)
@@ -89,8 +89,8 @@ namespace RSS
                 {
                     if (point.X == X && point.Y == Y)
                     {
-                        X = r.Next(2, 74);
-                        Y = r.Next(2, 74);
+                        X = Ran.dom.Next(2, 74);
+                        Y = Ran.dom.Next(2, 74);
                         match = true;
                     }
                 }
@@ -113,7 +113,6 @@ namespace RSS
         {
             var takenPoints = new List<Point>();
             takenPoints.Add(new Point(Program.Player.X, Program.Player.Y));
-            Random r = new Random();
             // Check to see if this is the first sector... if it is, we don't want to make a link to itself
             if (Program.CurrentSector > 0)
             {
@@ -128,7 +127,7 @@ namespace RSS
                 });
             }
 
-            int runTimes = r.Next(2, 4);
+            int runTimes = Ran.dom.Next(2, 4);
             for (int i = 0; i < runTimes; i++)
             {
                 Point point = GenerateRandomPoint(takenPoints);
@@ -144,7 +143,7 @@ namespace RSS
             }
 
 
-            runTimes = r.Next(2, 15);
+            runTimes = Ran.dom.Next(2, 15);
             for (int i = 0; i < runTimes; i++)
             {
                 Point point = GenerateRandomPoint(takenPoints);
@@ -153,7 +152,7 @@ namespace RSS
                     Color = RLColor.LightRed,
                     Name = "Nebula " + i,
                     Symbol = '#',
-                    TotalFuel = r.Next(0, 100),
+                    TotalFuel = Ran.dom.Next(0, 100),
                     X = point.X,
                     Y = point.Y,
                     Menu = new NebulaMenu()
@@ -164,14 +163,14 @@ namespace RSS
                     Color = RLColor.Yellow,
                     Name = "Wreckage " + i,
                     Symbol = 'W',
-                    SalvageAvailable = r.Next(0, 50),
+                    SalvageAvailable = Ran.dom.Next(0, 50),
                     X = point.X,
                     Y = point.Y,
                     Menu = new WreckageMenu()
                 });
             }
 
-            runTimes = r.Next(2, 4);
+            runTimes = Ran.dom.Next(2, 4);
             for (int i = 0; i < runTimes; i++)
             {
                 Point point = GenerateRandomPoint(takenPoints);

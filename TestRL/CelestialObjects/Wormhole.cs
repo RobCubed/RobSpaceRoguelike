@@ -51,11 +51,11 @@ namespace RSS.CelestialObjects
             Program._sectorMap.TryGetValue(JumpTo, out jumpToSector);
             if (jumpToSector != null)
             {
-                Debug.WriteLine("This jumps to " + jumpToSector.Name);
+                Program.InfoLog.AddEntry("Scan complete: Wormhole leads to " + jumpToSector.Name +".", true);
             }
             else
             {
-                Debug.WriteLine("This jumps to another sector.");
+                Program.InfoLog.AddEntry("Scan incomplete. Unknown sector.", true);
             }
         }
 

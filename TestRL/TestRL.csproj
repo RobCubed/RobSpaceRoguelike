@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{0D50E732-26AC-4980-B2E8-3F8DF6F2582E}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RSS</RootNamespace>
     <AssemblyName>RobSpaceRoguelike</AssemblyName>
@@ -31,6 +31,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="OpenTK">
@@ -78,9 +81,11 @@
     <Compile Include="RLKeyOption.cs" />
     <Compile Include="RLMenu.cs" />
     <Compile Include="Sector.cs" />
+    <Compile Include="Tools\InformationLog.cs" />
     <Compile Include="Tools\LoadSectorNames.cs" />
     <Compile Include="Tools\LocationHelper.cs" />
     <Compile Include="Tools\NameGenHelper.cs" />
+    <Compile Include="Tools\R.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

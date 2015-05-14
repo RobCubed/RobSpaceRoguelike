@@ -1,4 +1,5 @@
 ﻿using System;
+using RSS.Tools;
 
 namespace RSS.Actions.RandomActions
 {
@@ -6,13 +7,12 @@ namespace RSS.Actions.RandomActions
     {
         public static void Go()
         {
-            Random r = new Random();
             // 10% chance for an event on EVERYthing
             // 25% chance for object, 25% chance for fuelupgrade, 50% chance for pirates
 
-            if (r.NextDouble() > 0.03) return;
-            
-            Double randomEvent = r.NextDouble();
+            if (Ran.dom.NextDouble() > 0.01) return;
+
+            Double randomEvent = Ran.dom.NextDouble();
 
             if (randomEvent < 0.25)
             {

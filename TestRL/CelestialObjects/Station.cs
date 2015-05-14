@@ -29,12 +29,28 @@ namespace RSS.CelestialObjects
 
         public void BuyProbe()
         {
-            throw new NotImplementedException();
+            if (Program.Player.Credits < 25)
+            {
+                Program.InfoLog.AddEntry("You don't have enough to buy anything!", true);
+                return;
+            }
+            Program.InfoLog.AddEntry("Bought one probe for 25 credits.", true);
+            Program.Player.Credits -= 25;
+            Program.Player.FuelProbes++;
         }
 
         public void SellSalvage()
         {
-            throw new NotImplementedException();
+            if (Program.Player.CargoHold < 1)
+            {
+                Program.InfoLog.AddEntry("You have nothing to sell!", true);
+                return;
+            }
+
+            Program.InfoLog.AddEntry("Selling " + Program.Player.CargoHold + " salvage for " + Program.Player.CargoHold + " credits!", true);
+            Program.Player.Credits += Program.Player.CargoHold;
+            Program.Player.Score += Program.Player.CargoHold;
+            Program.Player.CargoHold = 0;
         }
 
         public void Jump()

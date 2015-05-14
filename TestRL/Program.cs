@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using RLNET;
 using RogueSharp;
@@ -9,13 +10,14 @@ using RSS.Actions.RandomActions;
 using RSS.Actions.StationActions;
 using RSS.Actions.WreckageActions;
 using RSS.CelestialObjects;
+using RSS.Tools;
 
 namespace RSS
 {
     class Program
     {
         public static readonly int ScreenWidth = 105;
-        public static readonly int ScreenHeight = 75;
+        public static readonly int ScreenHeight = 105;
         public static Player Player;
         private static RLRootConsole _rootConsole;
         private static string _statusText;
@@ -27,12 +29,14 @@ namespace RSS
         private static List<IRlKeyOption> _currentOptions;
         public static Dictionary<int, Sector> _sectorMap;
         public static int CurrentSector = 0;
+        public static InformationLog<int, string> InfoLog;
         
         static void Main(string[] args)
         {
             _statusText = "";
             Player = new Player();
 
+            InfoLog = new InformationLog<int, string>();
             _sectorMap = new Dictionary<int, Sector>();
             _sectorMap.Add(0, new Sector(CurrentSector));
             _sectorMap.TryGetValue(0, out _currentSectorMap);
@@ -49,8 +53,19 @@ namespace RSS
             // TESTING - Only uncomment this if you want to pre-generate (and travel through) a number of systems.
             //TestRun(50000);
 
+            //TestLog();
+
             _rootConsole.Run();
         }
+
+        private static void TestLog()
+        {
+            InfoLog.AddEntry("[00001] eorhkerpohkeroi ejoih erjoijh eroij herh eeorhkerpohkeroi ejoih erjoijh eroij herh eeorhkerpohkeroi ejoih erjoijh eroij herh e", true);
+            InfoLog.AddEntry("[00002] 23123 2354 43 5 345 345 ", true);
+            InfoLog.AddEntry("[00003] THIS IS A TEST. IT'S A TEST. IT'S JUST A TEST. TESTING. TESTING. TESTING.", true);
+            InfoLog.AddEntry("[00004] 123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789", true);
+        }
+
 
         private static void OnRootConsoleUpdate(object sender, UpdateEventArgs e)
         {
@@ -258,15 +273,62 @@ namespace RSS
                 _rootConsole.Print(18, i, "========================================", RLColor.Green);
             }
 
+            //Á : bottom-T
+            //Â : top-T
+            //Ã : left-T
+            //Å : +
 
+            //¿ : topright
+            //Ù : bottomright
+
+            //Ú : topleft
+            //À : bottomleft
+
+            //Ä : horizontal
+            //³ : vertical
+
+
+            _rootConsole.Print(0, 75, "ÚÄÄ SHIP'S LOG ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿", RLColor.White);
+            for (int j = 76; j < 104; j++)
+            {
+                _rootConsole.Print(0, j, "³                                                                         ³", RLColor.White);
+            }
+
+            int startingPoint = InfoLog.Count - 27;
+            //if (startingPoint < 0)
+            //{
+            //    for (int j = 0; j <= InfoLog.Count; j++)
+            //    {
+            //        string currentLine;
+            //        InfoLog.TryGetValue(j, out currentLine);
+            //        _rootConsole.Print(3, j + 76, currentLine, RLColor.Green);
+            //    }
+            //}
+            //else
+            //{
+                int line = 0;
+                for (int j = startingPoint; j <= InfoLog.Count; j++)
+                {
+                    string currentLine = " ";
+                    InfoLog.TryGetValue(j, out currentLine);
+                    _rootConsole.Print(3, line + 76, currentLine, RLColor.Green);
+                    line++;
+                }
+            //}
+
+            _rootConsole.Print(0, 104, "ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ", RLColor.White);
             // Tell RLNET to draw the console that we set
+            
             _rootConsole.Draw();
         }
 
         internal static void JumpToSector(int p)
         {
             if (!_sectorMap.ContainsKey(p))
+            {
                 _sectorMap.Add(p, new Sector(_sectorMap.Where(x => x.Value == _currentSectorMap).Select(x => x.Key).FirstOrDefault()));
+                Player.Score += 15;
+            }
             int fromSector = _sectorMap.Where(x => x.Value == _currentSectorMap).Select(x => x.Key).FirstOrDefault();
             _sectorMap.TryGetValue(p, out _currentSectorMap);
             _currentSectorMap.JoinSector(fromSector);
@@ -292,7 +354,7 @@ namespace RSS
                         {
                             JumpToSector(wh.JumpTo);
                             ints.Add(wh.JumpTo);
-                            Console.WriteLine(_currentSectorMap.Name);
+                            Console.WriteLine("Now in " + _currentSectorMap.Name);
                             break;
                         }
                     }

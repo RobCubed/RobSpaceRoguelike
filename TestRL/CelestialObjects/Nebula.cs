@@ -1,5 +1,6 @@
 ﻿using System;
 using RLNET;
+using RSS.Tools;
 
 namespace RSS.CelestialObjects
 {
@@ -23,7 +24,7 @@ namespace RSS.CelestialObjects
         {
             if (Program.Player.FuelProbes < 1)
             {
-                Console.WriteLine("You have no fuel probes. Go buy some!");
+                Program.InfoLog.AddEntry("You have no fuel probes. Go buy some at a station.", true);
                 return;
             }
             if (TotalFuel > 0)
@@ -31,30 +32,30 @@ namespace RSS.CelestialObjects
                 int fuel = TakeFuel();
                 if ((Program.Player.Fuel + fuel) > Program.Player.MaxFuel)
                 {
-                    Console.WriteLine("You couldn't fit " + fuel + " fuel in your hold. Filled up, but " +
+                    Program.InfoLog.AddEntry("You couldn't fit " + fuel + " fuel in your hold. Filled up, but " +
                                     ((Program.Player.Fuel + fuel) - Program.Player.MaxFuel) + " wasted. " + (TotalFuel - fuel) +
-                                    " remaining in " + Name);
+                                    " remaining in " + Name, true);
                     Program.Player.Fuel = Program.Player.MaxFuel;
                     Program.Player.FuelProbes = Program.Player.FuelProbes - 1;
                 }
                 else
                 {
                     Program.Player.Fuel += fuel;
-                    Console.WriteLine("Added " + fuel + " fuel to your hold. " + (TotalFuel - fuel) +
-                                    " remaining in " + Name);
+                    Program.InfoLog.AddEntry("Added " + fuel + " fuel to your hold. " + (TotalFuel - fuel) +
+                        " remaining in " + Name, true);
                     Program.Player.FuelProbes = Program.Player.FuelProbes - 1;
                 }
                 TotalFuel -= fuel;
             }
             else
             {
-                Console.WriteLine("No fuel left in nebula. Not using probe!");
+                Program.InfoLog.AddEntry("No fuel left in nebula. Probe not used.", true);
             }
         }
 
         public void Scan()
         {
-            Console.WriteLine("Available fuel in Nebula: " + TotalFuel);
+            Program.InfoLog.AddEntry("Available fuel in Nebula: " + TotalFuel, true);
         }
 
         public void Salvage()
@@ -79,7 +80,7 @@ namespace RSS.CelestialObjects
 
         public int TakeFuel()
         {
-            return new Random().Next(0, TotalFuel + 1);
+            return Ran.dom.Next(0, TotalFuel + 1);
         }
 
     }

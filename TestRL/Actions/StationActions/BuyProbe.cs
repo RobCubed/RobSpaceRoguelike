@@ -17,13 +17,7 @@ namespace RSS.Actions.StationActions
 
         public void Action(ICelestialObject ce)
         {
-            if (Program.Player.Credits < 25)
-            {
-                Console.WriteLine("You don't have enough to buy anything!");
-                return;
-            }
-            Program.Player.Credits -= 25;
-            Program.Player.FuelProbes++;
+            ce.BuyProbe();
         }
     }
 }

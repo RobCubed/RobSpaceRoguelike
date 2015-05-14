@@ -1,4 +1,5 @@
 ﻿using System;
+using RSS.Tools;
 
 namespace RSS.Actions.RandomActions
 {
@@ -6,9 +7,8 @@ namespace RSS.Actions.RandomActions
     {
         public static void Go()
         {
-            Random r = new Random();
-            int sellArtifacts = r.Next(5, 100);
-            Console.WriteLine("You found a rare alien artifact! You were able to sell it for " + sellArtifacts + " credits.");
+            int sellArtifacts = Ran.dom.Next(5, 100);
+            Program.InfoLog.AddEntry("You found a rare alien artifact! You were able to sell it for " + sellArtifacts + " credits.", true);
             Program.Player.Credits += sellArtifacts;
             Program.Player.Score += sellArtifacts;
         }
