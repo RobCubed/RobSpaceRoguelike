@@ -51,10 +51,10 @@ namespace RSS
                 if (ce.GetType() == typeof(Wormhole))
                 {
                     Wormhole wh = (Wormhole) ce;
-                    if (Program._sectorMap.ContainsKey(wh.JumpTo))
+                    if (Program.SectorMap.ContainsKey(wh.JumpTo))
                     {
                         Sector sector;
-                        Program._sectorMap.TryGetValue(wh.JumpTo, out sector);
+                        Program.SectorMap.TryGetValue(wh.JumpTo, out sector);
                         if (sector != null)
                         {
                             foreach (ICelestialObject nce in sector.CelestialObjects)
@@ -78,8 +78,8 @@ namespace RSS
 
         private static Point GenerateRandomPoint(List<Point> takenPoints)
         {
-            int X = Ran.dom.Next(2, 74);
-            int Y = Ran.dom.Next(2, 74);
+            int X = Ran.dom.Next(2, Program.ScreenWidth - 31);
+            int Y = Ran.dom.Next(2, Program.ScreenHeight - 31);
             bool check = true;
             Point finalPoint = new Point();
             while (check)
@@ -89,8 +89,8 @@ namespace RSS
                 {
                     if (point.X == X && point.Y == Y)
                     {
-                        X = Ran.dom.Next(2, 74);
-                        Y = Ran.dom.Next(2, 74);
+                        X = Ran.dom.Next(2, Program.ScreenWidth - 31);
+                        Y = Ran.dom.Next(2, Program.ScreenHeight - 31);
                         match = true;
                     }
                 }

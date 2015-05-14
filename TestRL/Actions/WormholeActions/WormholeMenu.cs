@@ -11,6 +11,7 @@ namespace RSS.Actions.WormholeActions
             Options = new List<IRlKeyOption>();
             Options.Add(new Scan());
             Options.Add(new Jump());
+            Options.Add(new Cancel());
         }
     }
 }

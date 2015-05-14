@@ -12,6 +12,7 @@ namespace RSS.Actions.WreckageActions
             Options = new List<IRlKeyOption>();
             Options.Add(new Salvage());
             Options.Add(new Scan());
+            Options.Add(new Cancel());
         }
     }
 }

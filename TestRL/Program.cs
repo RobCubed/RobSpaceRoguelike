@@ -10,6 +10,7 @@ using RSS.Actions.RandomActions;
 using RSS.Actions.StationActions;
 using RSS.Actions.WreckageActions;
 using RSS.CelestialObjects;
+using RSS.Menu;
 using RSS.Tools;
 
 namespace RSS
@@ -17,33 +18,33 @@ namespace RSS
     class Program
     {
         public static readonly int ScreenWidth = 105;
-        public static readonly int ScreenHeight = 105;
+        public static readonly int ScreenHeight = 90;
         public static Player Player;
+        public static PopupMenu PopupMenu;
+        public static bool ActiveMenu;
         private static RLRootConsole _rootConsole;
         private static string _statusText;
         private static ICelestialObject _currentCelestialObject;
         private static Sector _currentSectorMap;
-        private static IRlMenu _menu;
-        private static bool _menuActive;
         private static Cancel _cancel;
-        private static List<IRlKeyOption> _currentOptions;
-        public static Dictionary<int, Sector> _sectorMap;
+        public static Dictionary<int, Sector> SectorMap;
         public static int CurrentSector = 0;
         public static InformationLog<int, string> InfoLog;
+        private static bool _gameOver;
         
         static void Main(string[] args)
         {
+            _gameOver = false;
             _statusText = "";
             Player = new Player();
 
             InfoLog = new InformationLog<int, string>();
-            _sectorMap = new Dictionary<int, Sector>();
-            _sectorMap.Add(0, new Sector(CurrentSector));
-            _sectorMap.TryGetValue(0, out _currentSectorMap);
+            SectorMap = new Dictionary<int, Sector>();
+            SectorMap.Add(0, new Sector(CurrentSector));
+            SectorMap.TryGetValue(0, out _currentSectorMap);
             _currentSectorMap.JoinSector();
 
             _cancel = new Cancel();
-            _menuActive = false;
             string fontFileName = "terminal8x8.png";
             string consoleTitle = "RobSpaceRoguelike";
             _rootConsole = new RLRootConsole(fontFileName, ScreenWidth, ScreenHeight, 8, 8, 1f, consoleTitle);
@@ -72,14 +73,13 @@ namespace RSS
             RLKeyPress keyPress = _rootConsole.Keyboard.GetKeyPress();
             if (keyPress != null)
             {
-                if (_menuActive)
+                if (ActiveMenu)
                 {
-                    foreach (IRlKeyOption rlko in _currentOptions)
+                    foreach (IRlKeyOption rlko in PopupMenu.MenuItems)
                     {
                         if (keyPress.Key == rlko.Key)
                         {
                             rlko.Action(_currentCelestialObject);
-                            _menuActive = !_menuActive;
                         }
                     }
                     return;
@@ -100,8 +100,8 @@ namespace RSS
                         if (ce != null)
                         {
                             _currentCelestialObject = ce;
-                            _menu = ce.Menu;
-                            _menuActive = true;
+                            PopupMenu = new PopupMenu(ce.Name, ce.Menu.Options, 10, 10);
+                            ActiveMenu = true;
                         }
                     }
                 }
@@ -121,8 +121,8 @@ namespace RSS
                         if (ce != null)
                         {
                             _currentCelestialObject = ce;
-                            _menu = ce.Menu;
-                            _menuActive = true;
+                            PopupMenu = new PopupMenu(ce.Name, ce.Menu.Options, 10, 10);
+                            ActiveMenu = true;
                         }
                     }
                 }
@@ -141,8 +141,8 @@ namespace RSS
                         if (ce != null)
                         {
                             _currentCelestialObject = ce;
-                            _menu = ce.Menu;
-                            _menuActive = true;
+                            PopupMenu = new PopupMenu(ce.Name, ce.Menu.Options, 10, 10);
+                            ActiveMenu = true;
                         }
                     }
                 }
@@ -161,8 +161,8 @@ namespace RSS
                         if (ce != null)
                         {
                             _currentCelestialObject = ce;
-                            _menu = ce.Menu;
-                            _menuActive = true;
+                            PopupMenu = new PopupMenu(ce.Name, ce.Menu.Options, 10, 10);
+                            ActiveMenu = true;
                         }
                     }
                 }
@@ -179,6 +179,8 @@ namespace RSS
             if (Player.Fuel < 1)
             {
                 _statusText = "Out of Fuel!";
+                if (!_gameOver) InfoLog.AddEntry("Out of fuel! Game over. You ended with a score of " + Player.Score, true);
+                _gameOver = true;
                 return true;
             }
             _statusText = "                      ";
@@ -253,26 +255,6 @@ namespace RSS
 
             _rootConsole.Print(77, 40, _statusText, RLColor.Red);
 
-            if (_menuActive)
-            {
-                _currentOptions = new List<IRlKeyOption>();
-                _rootConsole.Print(18, 18, "========================================", RLColor.Green);
-                _rootConsole.Print(20, 18, _currentCelestialObject.Name, RLColor.LightGreen);
-                int i = 19;
-                foreach (IRlKeyOption option in _menu.Options)
-                {
-                    _rootConsole.Print(18, i, "|                                      |", RLColor.Green);
-                    _rootConsole.Print(20, i, option.Key.ToString() + " : " + option.OptionText, RLColor.Green);
-                    _currentOptions.Add(option);
-                    i++;
-                }
-                _rootConsole.Print(18, i++, "|                                      |", RLColor.Green);
-                _rootConsole.Print(18, i, "|                                      |", RLColor.Green);
-                _rootConsole.Print(20, i++, _cancel.Key.ToString() + " : " + _cancel.OptionText, RLColor.Green);
-                _currentOptions.Add(_cancel);
-                _rootConsole.Print(18, i, "========================================", RLColor.Green);
-            }
-
             //Á : bottom-T
             //Â : top-T
             //Ã : left-T
@@ -287,54 +269,63 @@ namespace RSS
             //Ä : horizontal
             //³ : vertical
 
+            DrawViewscreen();
+            DrawShipLog();
 
-            _rootConsole.Print(0, 75, "ÚÄÄ SHIP'S LOG ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿", RLColor.White);
-            for (int j = 76; j < 104; j++)
+            if (ActiveMenu)
+            {
+                PopupMenu.DrawMenu(_rootConsole);
+            }
+
+            _rootConsole.Draw();
+        }
+
+        private static void DrawShipLog()
+        {
+            _rootConsole.Print(0, ScreenHeight - 30, "ÚÄÄ SHIP'S LOG ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿", RLColor.White);
+            for (int j = ScreenHeight - 29; j < 104; j++)
             {
                 _rootConsole.Print(0, j, "³                                                                         ³", RLColor.White);
             }
 
             int startingPoint = InfoLog.Count - 27;
-            //if (startingPoint < 0)
-            //{
-            //    for (int j = 0; j <= InfoLog.Count; j++)
-            //    {
-            //        string currentLine;
-            //        InfoLog.TryGetValue(j, out currentLine);
-            //        _rootConsole.Print(3, j + 76, currentLine, RLColor.Green);
-            //    }
-            //}
-            //else
-            //{
-                int line = 0;
-                for (int j = startingPoint; j <= InfoLog.Count; j++)
-                {
-                    string currentLine = " ";
-                    InfoLog.TryGetValue(j, out currentLine);
-                    _rootConsole.Print(3, line + 76, currentLine, RLColor.Green);
-                    line++;
-                }
-            //}
+            int line = 0;
+            for (int j = startingPoint; j <= InfoLog.Count; j++)
+            {
+                string currentLine = " ";
+                InfoLog.TryGetValue(j, out currentLine);
+                _rootConsole.Print(3, line + ScreenHeight - 29, currentLine, RLColor.Green);
+                line++;
+            }
 
-            _rootConsole.Print(0, 104, "ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ", RLColor.White);
-            // Tell RLNET to draw the console that we set
-            
-            _rootConsole.Draw();
+            _rootConsole.Print(0, ScreenHeight - 1, "ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ", RLColor.White);
+        }
+
+        private static void DrawViewscreen()
+        {
+            _rootConsole.Print(0, 0, "ÚÄÄ VIEWSCREEN ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿", RLColor.White);
+            _rootConsole.Print(15, 0, " " + _currentSectorMap.Name + " ", RLColor.LightCyan);
+            for (int j = 1; j < ScreenHeight - 31; j++)
+            {
+                _rootConsole.Print(0, j, "³", RLColor.White);
+                _rootConsole.Print(ScreenWidth - 31, j, "³", RLColor.White);
+            }
+            _rootConsole.Print(0, ScreenHeight - 31, "ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ", RLColor.White);
         }
 
         internal static void JumpToSector(int p)
         {
-            if (!_sectorMap.ContainsKey(p))
+            if (!SectorMap.ContainsKey(p))
             {
-                _sectorMap.Add(p, new Sector(_sectorMap.Where(x => x.Value == _currentSectorMap).Select(x => x.Key).FirstOrDefault()));
+                SectorMap.Add(p, new Sector(SectorMap.Where(x => x.Value == _currentSectorMap).Select(x => x.Key).FirstOrDefault()));
                 Player.Score += 15;
             }
-            int fromSector = _sectorMap.Where(x => x.Value == _currentSectorMap).Select(x => x.Key).FirstOrDefault();
-            _sectorMap.TryGetValue(p, out _currentSectorMap);
+            int fromSector = SectorMap.Where(x => x.Value == _currentSectorMap).Select(x => x.Key).FirstOrDefault();
+            SectorMap.TryGetValue(p, out _currentSectorMap);
             _currentSectorMap.JoinSector(fromSector);
             InfoLog.AddEntry("Now in " + _currentSectorMap.Name, true);
         }
-
+        
         private static void TestRun(int numSystems)
         {
             HashSet<int> ints = new HashSet<int>();
@@ -346,7 +337,7 @@ namespace RSS
                     {
                         Wormhole wh = (Wormhole) ce;
                         Sector sectorCheck;
-                        _sectorMap.TryGetValue(wh.JumpTo, out sectorCheck);
+                        SectorMap.TryGetValue(wh.JumpTo, out sectorCheck);
                         if (sectorCheck == _currentSectorMap || ints.Contains(wh.JumpTo))
                         {
                             continue;

@@ -17,7 +17,7 @@ namespace RSS.CelestialObjects
             JumpTo = jumpTo;
 
             Sector jumpToSector = null;
-            Program._sectorMap.TryGetValue(JumpTo, out jumpToSector);
+            Program.SectorMap.TryGetValue(JumpTo, out jumpToSector);
             if (jumpToSector != null)
             {
                 Name = "Wormhole to " + jumpToSector.Name;
@@ -48,7 +48,7 @@ namespace RSS.CelestialObjects
         public void Scan()
         {
             Sector jumpToSector = null;
-            Program._sectorMap.TryGetValue(JumpTo, out jumpToSector);
+            Program.SectorMap.TryGetValue(JumpTo, out jumpToSector);
             if (jumpToSector != null)
             {
                 Program.InfoLog.AddEntry("Scan complete: Wormhole leads to " + jumpToSector.Name +".", true);

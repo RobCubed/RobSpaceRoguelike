@@ -11,6 +11,7 @@ namespace RSS.Actions.NebulaActions
             Options = new List<IRlKeyOption>();
             Options.Add(new Refuel());
             Options.Add(new Scan());
+            Options.Add(new Cancel());
         }
     }
 }

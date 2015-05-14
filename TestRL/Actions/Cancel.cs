@@ -5,20 +5,9 @@ namespace RSS.Actions
 {
     class Cancel : IRlKeyOption
     {
-        private RLKey _key;
-        private string _optionText;
+        public RLKey Key { get; set; }
 
-        public RLKey Key
-        {
-            get { return _key; }
-            set { _key = value; }
-        }
-
-        public string OptionText
-        {
-            get { return _optionText; }
-            set { _optionText = value; }
-        }
+        public string OptionText { get; set; }
 
         public Cancel()
         {
@@ -28,7 +17,7 @@ namespace RSS.Actions
 
         public void Action(ICelestialObject ce)
         {
-            
+            Program.PopupMenu.FallBack();
         }
-    }
+   }
 }

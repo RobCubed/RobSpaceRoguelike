@@ -11,6 +11,7 @@ namespace RSS.Actions.StationActions
             Options = new List<IRlKeyOption>();
             Options.Add(new SellSalvage());
             Options.Add(new BuyProbe());
+            Options.Add(new Cancel());
         }
     }
 }

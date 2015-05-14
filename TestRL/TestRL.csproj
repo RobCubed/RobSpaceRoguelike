@@ -75,6 +75,7 @@
     <Compile Include="CelestialObjects\Station.cs" />
     <Compile Include="CelestialObjects\Wormhole.cs" />
     <Compile Include="CelestialObjects\Wreckage.cs" />
+    <Compile Include="Menu\PopupMenu.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
